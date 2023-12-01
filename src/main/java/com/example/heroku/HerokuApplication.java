@@ -54,51 +54,52 @@ public class HerokuApplication {
   }
 
   @RequestMapping("/db")
-  String db(Map<String, Object> model) {
+String db(Map<String, Object> model) {
     try (Connection connection = dataSource.getConnection()) {
-      Statement stmt = connection.createStatement();
-      stmt.executeUpdate("CREATE TABLE IF NOT EXISTS table_timestamp_and_random_string (tick timestamp, random_string varchar(30))");
-stmt.executeUpdate("INSERT INTO table_timestamp_and_random_string VALUES (now(), '" + getRandomString(10) + "')");
-      ResultSet rs = stmt.executeQuery("SELECT tick, random_string FROM table_timestamp_random_string")) ;
-            ArrayList<String> output = new ArrayList<>();
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS table_timestamp_and_random_string (tick timestamp, random_string varchar(30))");
+        stmt.executeUpdate("INSERT INTO table_timestamp_and_random_string VALUES (now(), '" + getRandomString(10) + "')");
 
-            while (rs.next()) {
-                Timestamp timestamp = rs.getTimestamp("tick");
-                String randomString = rs.getString("random_string");
+        ResultSet rs = stmt.executeQuery("SELECT tick, random_string FROM table_timestamp_and_random_string");
+        ArrayList<String> output = new ArrayList<>();
 
-                output.add("Read from DB: Timestamp=" + timestamp + ", Random String=" + randomString);
-            }
+        while (rs.next()) {
+            Timestamp timestamp = rs.getTimestamp("tick");
+            String randomString = rs.getString("random_string");
 
-      model.put("records", output);
-      return "db";
-    } catch (Exception e) {
-      model.put("message", e.getMessage());
-      return "error";
-    }
-  }
-
-
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    public static String getRandomString(int length) {
-        StringBuilder stringBuilder = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int randomIndex = (int) (Math.random() * CHARACTERS.length());
-            char randomChar = CHARACTERS.charAt(randomIndex);
-            stringBuilder.append(randomChar);
+            output.add("Read from DB: Timestamp=" + timestamp + ", Random String=" + randomString);
         }
-        return stringBuilder.toString();
-    }
 
-  @Bean
-  public DataSource dataSource() throws SQLException {
-    if (dbUrl == null || dbUrl.isEmpty()) {
-      return new HikariDataSource();
-    } else {
-      HikariConfig config = new HikariConfig();
-      config.setJdbcUrl(dbUrl);
-      return new HikariDataSource(config);
+        model.put("records", output);
+        return "db";
+    } catch (Exception e) {
+        model.put("message", e.getMessage());
+        return "error";
     }
-  }
-
 }
+
+private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+public static String getRandomString(int length) {
+    StringBuilder stringBuilder = new StringBuilder(length);
+    for (int i = 0; i < length; i++) {
+        int randomIndex = (int) (Math.random() * CHARACTERS.length());
+        char randomChar = CHARACTERS.charAt(randomIndex);
+        stringBuilder.append(randomChar);
+    }
+    return stringBuilder.toString();
+}
+
+@Bean
+public DataSource dataSource() throws SQLException {
+    if (dbUrl == null || dbUrl.isEmpty()) {
+        return new HikariDataSource();
+    } else {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(dbUrl);
+        return new HikariDataSource(config);
+    }
+}
+}
+
+
