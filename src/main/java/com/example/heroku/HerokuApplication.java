@@ -63,7 +63,7 @@ stmt.executeUpdate("INSERT INTO table_timestamp_and_random_string VALUES (now(),
 
       ArrayList<String> output = new ArrayList<String>();
       while (rs.next()) {
-        output.add("Read from DB: " );
+        output.add("Read from DB: " + rs);
       }
 
       model.put("records", output);
