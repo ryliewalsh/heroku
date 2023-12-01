@@ -60,13 +60,15 @@ public class HerokuApplication {
       stmt.executeUpdate("CREATE TABLE IF NOT EXISTS table_timestamp_and_random_string (tick timestamp, random_string varchar(30))");
       String random = getRandomString(10);
       stmt.executeUpdate("INSERT INTO table_timestamp_and_random_string VALUES (now(), '" + random + "')");
-      ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
+    // Retrieve data from the table
+    ResultSet rs = stmt.executeQuery("SELECT tick, random_string FROM table_timestamp_and_random_string");
 
-      ArrayList<String> output = new ArrayList<String>();
-      while (rs.next()) {
+    ArrayList<String> output = new ArrayList<>();
+
+    // Iterate through the result set and add each row to the output list
+    while (rs.next()) {
         output.add("Read from DB: " + rs.getTimestamp("tick") + " " + rs.getString("random_string"));
-      }
-
+    }
       model.put("records", output);
       return "db";
     } catch (Exception e) {
