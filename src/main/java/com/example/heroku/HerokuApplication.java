@@ -70,6 +70,7 @@ public class HerokuApplication {
         output.add("Read from DB: " + rs.getTimestamp("tick") + " " + rs.getString("random_string"));
     }
       model.put("records", output);
+      System.out.println("HELLO/n");
       return "db";
     } catch (Exception e) {
       model.put("message", e.getMessage());
